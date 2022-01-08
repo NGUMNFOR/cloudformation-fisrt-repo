@@ -1,0 +1,387 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "    This ",
+    "Metadata": {},
+    "Parameters": {
+  
+  "vpccidr": {
+      "Description": "Provide cidr block for vpc",
+      "Type": "String",
+      "Default": "10.0.0.0/16"
+  },
+  
+  "instancetype": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "t2.micro"
+  },
+  
+  "instancetypeprv": {
+      "Description": "-",
+      "Type": "String",
+      "Default": "t2.micro"
+  },
+  
+  
+  
+  "subnet1cidr": {
+      "Description": "Provide cidr block for subnet1",
+    "Type": "String",
+      "Default": "10.0.1.0/24"
+  },
+  "subnetpriv3": {
+    "Description": "provide subnet for subnetpriv2",
+    "Type": "String",
+    "Default": "10.0.5.0/24"
+},
+  
+  "subnet2cidr": {
+      "Description": "Provide cidr block for subnet2",
+      "Type": "String",
+      "Default": "10.0.2.0/24"
+  },
+  
+  "subnetpri1": {
+      "Description": "Provide cidr block for priv-subnet1",
+      "Type": "String",
+      "Default": "10.0.3.0/24"
+  },
+  
+  "subnetpri2": {
+      "Description": "Provide cidr block for priv-subnet2",
+      "Type": "String",
+      "Default": "10.0.4.0/24"
+  },
+  
+  "subnet1az": {
+      "Description": "provide an az for subnet1",
+      "Type": "AWS::EC2::AvailabilityZone::Name"
+  },
+  "fromtoport": {
+    "Type": "String",
+    "Default": "65535"
+},
+"fromporttoport2": {
+    "Type": "String",
+    "Default": "22"
+},
+"fromporttoport3": {
+    "Type": "String",
+    "Default": "65535"
+},
+
+"PubimagID": {
+    "Description": "-",
+    "Type":  "AWS::EC2::Image::Id"
+    ,
+    "Default": "ami-0ed9277fb7eb570c9"
+},
+
+"privimagID": {
+    "Description": "-",
+    "Type": "AWS::EC2::Image::Id",
+    "Default": "ami-0ed9277fb7eb570c9"
+},
+
+
+"cidrIP1": {  
+    "Type": "String",
+    "Default": "0.0.0.0/0"
+},
+"cidrIP2": {
+    "Type": "String",
+    "Default": "0.0.0.0/0"
+},
+"cidrIP3": {
+    "Type": "String",
+    "Default": "0.0.0.0/0"
+},
+
+"Keypair": {
+    "Description": "-",
+    "Type": "AWS::EC2::KeyPair::KeyName"
+},
+
+"keypair": {
+    "Description": "-",
+    "Type": "AWS::EC2::KeyPair::KeyName"
+    
+}
+
+
+  
+    },
+    "Mappings": {},
+    "Conditions": {},
+    "Resources": {
+      "CamtelVPC": {
+        "Type": "AWS::EC2::VPC",
+        "Properties": {
+          "CidrBlock": 
+          { "Ref": "vpccidr" }
+          ,
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "CamtelVPC"
+            }
+          ]
+        }
+      },
+      "Camtelsubnetpub1": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": 
+          { "Ref": "subnet1az" }
+          ,
+          "MapPublicIpOnLaunch": true,
+          "VpcId": {
+            "Ref": "CamtelVPC"
+          },
+          "CidrBlock": 
+          { "Ref": "subnet1cidr" }
+          ,
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "Camtelsub-netpub1"
+            }
+          ]
+        }
+      },
+      "Camtelsubnetpub2": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": "us-east-1b",
+          "MapPublicIpOnLaunch": true,
+          "VpcId": {
+            "Ref": "CamtelVPC"
+          },
+          "CidrBlock": 
+          { "Ref": "subnet2cidr" }
+          ,
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "Camtelsub-netpub2"
+            }
+          ]
+        }
+      },
+      "Camtelprivsubnet1": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": "us-east-1a",
+          "MapPrivateIpOnLaunch": true,
+          "VpcId": {
+            "Ref": "CamtelVPC"
+          },
+          "CidrBlock": 
+          { "Ref": "subnetpri1" }
+          ,
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "Camtelpriv-subnet1"
+            }
+          ]
+        }
+      },
+      "Camtelprivsubnet2": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": "us-east-1b",
+          "VpcId": {
+            "Ref": "CamtelVPC"
+          },
+          "CidrBlock": 
+          { "Ref": "subnetpri2" }
+           ,
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "Camtelpriv-subnet2"
+            }
+          ]
+        }
+      },
+      "Camtelprivsubnet3": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": "us-east-1c",
+          "VpcId": {
+            "Ref": "CamtelVPC"
+          },
+          "CidrBlock": 
+          { "Ref": "subnetpriv3" }
+          ,
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "Camtelpriv-subnet3"
+            }
+          ]
+        }
+      },
+      "CamtelIGW": {
+        "Type": "AWS::EC2::InternetGateway",
+        "Properties": {
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "CamtelIGW"
+            }
+          ]
+        }
+      },
+      "AttachGateway": {
+        "Type": "AWS::EC2::VPCGatewayAttachment",
+        "Properties": {
+          "VpcId": {
+            "Ref": "CamtelVPC"
+          },
+          "InternetGatewayId": {
+            "Ref": "CamtelIGW"
+          }
+        }
+      },
+      "camtelRT": {
+        "Type": "AWS::EC2::RouteTable",
+        "Properties": {
+          "VpcId": {
+            "Ref": "CamtelVPC"
+          },
+          "Tags": [
+            {
+              "Key": "Name",
+              "Value": "camtel-RT"
+            }
+          ]
+        }
+      },
+      "CamtelRoute": {
+        "Type": "AWS::EC2::Route",
+        "Properties": {
+          "RouteTableId": { "Ref": "camtelRT" },
+          "DestinationCidrBlock": "0.0.0.0/0",
+          "GatewayId": {
+            "Ref": "CamtelIGW"
+          }
+        }
+      },
+      "CametassociationsubnetRT": {
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties": {
+          "SubnetId": {
+            "Ref": "Camtelsubnetpub1"
+          },
+          "RouteTableId": {
+            "Ref": "camtelRT"
+          }
+        }
+      },
+      "WebSecurityGroup": {
+        "Type": "AWS::EC2::SecurityGroup",
+        "Properties": {
+          "GroupDescription": "Allow http to client host",
+          "VpcId": { "Ref": "CamtelVPC" },
+          "SecurityGroupIngress": [
+            {
+              "IpProtocol": "tcp",
+              "FromPort":
+              { "Ref": "fromtoport" }
+              ,
+              "ToPort":
+              { "Ref": "fromtoport" }
+              ,
+              "CidrIp":
+              { "Ref": "cidrIP1" }
+            },
+            {
+              "IpProtocol": "tcp",
+              "FromPort":
+              { "Ref": "fromporttoport2" }
+              ,
+              "ToPort":
+              { "Ref": "fromporttoport2" }
+              ,
+              "CidrIp": "71.163.242.34/32" 
+            }
+          ],
+          "SecurityGroupEgress": [
+            {
+              "IpProtocol": "tcp",
+              "FromPort":
+              { "Ref": "fromporttoport2" }
+              ,
+              "ToPort":
+              { "Ref": "fromporttoport2" }
+              ,
+              "CidrIp":  "71.163.242.34/32"
+            }
+          ]
+        }
+      },
+      "MyEc2instance": {
+        "Type": "AWS::EC2::Instance",
+        "Properties": {
+            "KeyName": 
+            { "Ref": "Keypair" }
+            ,
+            "DisableApiTermination": "false",
+            "ImageId": 
+            { "Ref": "PubimagID" }
+            ,
+            "InstanceType": 
+            { "Ref": "instancetype" }
+            ,
+            "SubnetId" : 
+            { "Ref": "Camtelsubnetpub1" }
+            ,
+            "Monitoring": "true",
+            "SecurityGroupIds" : 
+            [{ "Ref": "WebSecurityGroup" }],
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": "MyEc2instance"
+                }
+            ]
+
+    }
+            },
+            
+            "MyEc2instancepriv": {
+                "Type": "AWS::EC2::Instance",
+                "Properties": {
+                    "KeyName": 
+                    { "Ref": "keypair" }
+                    ,
+                    "DisableApiTermination": "false",
+                    "ImageId":  
+                    { "Ref": "privimagID" }
+                    ,
+                    "InstanceType": 
+                    { "Ref": "instancetypeprv" },
+                    "SubnetId" : 
+                    { "Ref": "Camtelprivsubnet1" }
+                    
+                    ,
+                    "Monitoring": "true",
+                    "SecurityGroupIds" : [
+                      
+                      { "Ref": "WebSecurityGroup" }
+                      
+                    ],
+                    "Tags": [
+                        {
+                            "Key": "Name",
+                            "Value": "MyEc2instancepriv-"
+                        }
+                    ]
+                
+            }
+                    }
+    },
+    "Outputs": {}
+  }
