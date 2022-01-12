@@ -43,13 +43,6 @@
   "Default": "65535"
 },
 
-"PubimagID": {
-  "Description": "-",
-  "Type":  "AWS::EC2::Image::Id"
-  ,
-  "Default": "ami-0ed9277fb7eb570c9"
-},
-
 "privimagID": {
   "Description": "-",
   "Type": "AWS::EC2::Image::Id",
@@ -78,11 +71,42 @@
 "Description": "-",
 "Type": "AWS::EC2::KeyPair::KeyName"
 
+},
+
+"EnvironmentType": {
+    "Description": "These are the list of environments like prod, dev, sbx",
+    "Type": "String",
+    "AllowedValues": [
+      "prod",
+      "dev",
+      "sbx"
+    ],
+    "ConstraintDescription": "Most specify "
+    
 }
 
+
   },
-  "Mappings": {},
-  "Conditions": {},
+  "Mappings": {
+    "RegionMapTo" : {
+      "us-east-1"      : { "AMI" : "ami-0ed9277fb7eb570c9"},
+      "us-west-1"      : { "AMI" : "ami-0bdb828fd58c52235"},
+      "us-west-2"      : { "AMI" : "ami-a0cfeed8"}
+    }
+  },
+  "Conditions": {
+    "UseProdCondition" : {
+
+      "Fn::Equals": [
+   
+         {"Ref": "EnvironmentType"},
+   
+         "prod"
+   
+      ]
+   
+   }
+  },
   "Resources": {
     "CamtelVPC": {
       "Type": "AWS::EC2::VPC",
@@ -171,6 +195,7 @@
         ]
       }
     },
+
     "CamtelIGW": {
       "Type": "AWS::EC2::InternetGateway",
       "Properties": {
@@ -276,10 +301,9 @@
           "KeyName": 
           { "Ref": "webkeypair" }
           ,
-          "DisableApiTermination": "false",
-          "ImageId": 
-          { "Ref": "PubimagID" }
-          ,
+          "DisableApiTermination": "false", 
+          "ImageId" : { "Fn::FindInMap" : [ "RegionMapTo", { "Ref" : "AWS::Region" }, "AMI" ]},
+          
           "InstanceType": 
           { "Ref": "WEBinstancetype" }
           ,
@@ -301,6 +325,7 @@
           
           "AppInstance": {
               "Type": "AWS::EC2::Instance",
+              "Condition": "UseProdCondition", 
               "Properties": {
                   "KeyName": 
                   { "Ref": "APPkeypair" }
