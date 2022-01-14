@@ -10,103 +10,49 @@
     "Default": "10.0.0.0/16"
 },
 
-"WEBinstancetype": {
-    "Description": "Select the available instance type from the list.",
-    "Type": "String",
-   "AllowedValues": [
-     "t2.micro",
-     "t2.large",
-     "t2.xlarge"
-   ]
-},
-
-"APPinstancetype": {
-    "Description": "Provide an instance for webinstance",
-    "Type": "String",
-    "Default": "t2.micro"
-},
-
 "subnet1az": {
     "Description": "provide an az for subnet1",
     "Type": "AWS::EC2::AvailabilityZone::Name"
 },
+
 "fromtoport": {
   "Type": "String",
   "Default": "65535"
 },
+
 "fromporttoport2": {
   "Type": "String",
   "Default": "22"
 },
+
 "fromporttoport3": {
   "Type": "String",
   "Default": "65535"
 },
 
-"privimagID": {
-  "Description": "-",
-  "Type": "AWS::EC2::Image::Id",
-  "Default": "ami-0ed9277fb7eb570c9"
-},
-
-
 "cidrIP1": {  
   "Type": "String",
   "Default": "71.163.242.34/32"
 },
+
 "cidrIP2": {
   "Type": "String",
   "Default": "71.163.242.34/32"
 },
+
 "cidrIP3": {
   "Type": "String",
   "Default": "71.163.242.34/32"
-},
-
-"webkeypair": {
-  "Description": "-",
-  "Type": "AWS::EC2::KeyPair::KeyName"
-},
-"APPkeypair": {
-"Description": "-",
-"Type": "AWS::EC2::KeyPair::KeyName"
-
-},
-
-"EnvironmentType": {
-    "Description": "These are the list of environments like prod, dev, sbx",
-    "Type": "String",
-    "AllowedValues": [
-      "prod",
-      "dev",
-      "sbx"
-    ],
-    "ConstraintDescription": "Most specify "
-    
 }
 
-
-  },
+ },
   "Mappings": {
-    "RegionMapTo" : {
-      "us-east-1"      : { "AMI" : "ami-0ed9277fb7eb570c9"},
-      "us-west-1"      : { "AMI" : "ami-0bdb828fd58c52235"},
-      "us-west-2"      : { "AMI" : "ami-a0cfeed8"}
-    }
+       
   },
   "Conditions": {
-    "UseProdCondition" : {
-
-      "Fn::Equals": [
    
-         {"Ref": "EnvironmentType"},
-   
-         "prod"
-   
-      ]
-   
-   }
   },
+
   "Resources": {
     "CamtelVPC": {
       "Type": "AWS::EC2::VPC",
@@ -122,6 +68,7 @@
         ]
       }
     },
+
     "Camtelsubnetpub1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
@@ -132,6 +79,7 @@
         "VpcId": {
           "Ref": "CamtelVPC"
         },
+
         "CidrBlock" : { "Fn::Select" : [ 0, { "Fn::Cidr" : [{ "Fn::GetAtt" : [ "CamtelVPC", "CidrBlock" ]}, 4, 8 ]}]},
 
         "Tags": [
@@ -142,6 +90,7 @@
         ]
       }
     },
+
     "Camtelsubnetpub2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
@@ -161,6 +110,7 @@
         ]
       }
     },
+
     "Camtelprivsubnet1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
@@ -178,6 +128,7 @@
         ]
       }
     },
+
     "Camtelprivsubnet2": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
@@ -207,6 +158,7 @@
         ]
       }
     },
+    
     "AttachGateway": {
       "Type": "AWS::EC2::VPCGatewayAttachment",
       "Properties": {
@@ -218,6 +170,7 @@
         }
       }
     },
+
     "camtelRT": {
       "Type": "AWS::EC2::RouteTable",
       "Properties": {
@@ -294,67 +247,20 @@
           }
         ]
       }
-    },
-    "WebInstance": {
-      "Type": "AWS::EC2::Instance",
-      "Properties": {
-          "KeyName": 
-          { "Ref": "webkeypair" }
-          ,
-          "DisableApiTermination": "false", 
-          "ImageId" : { "Fn::FindInMap" : [ "RegionMapTo", { "Ref" : "AWS::Region" }, "AMI" ]},
-          
-          "InstanceType": 
-          { "Ref": "WEBinstancetype" }
-          ,
-          "SubnetId" : 
-          { "Ref": "Camtelsubnetpub1" }
-          ,
-          "Monitoring": "true",
-          "SecurityGroupIds" : 
-          [{ "Ref": "WebSecurityGroup" }],
-          "Tags": [
-              {
-                  "Key": "Name",
-                  "Value": "WebInstance"
-              }
-          ]
-
-  }
-          },
-          
-          "AppInstance": {
-              "Type": "AWS::EC2::Instance",
-              "Condition": "UseProdCondition", 
-              "Properties": {
-                  "KeyName": 
-                  { "Ref": "APPkeypair" }
-                  ,
-                  "DisableApiTermination": "false",
-                  "ImageId":  
-                  { "Ref": "privimagID" }
-                  ,
-                  "InstanceType": 
-                  { "Ref": "APPinstancetype" },
-                  "SubnetId" : 
-                  { "Ref": "Camtelprivsubnet1" }
-                  
-                  ,
-                  "Monitoring": "true",
-                  "SecurityGroupIds" : [
-                    
-                    { "Ref": "WebSecurityGroup" }
-                    
-                  ],
-                  "Tags": [
-                      {
-                          "Key": "Name",
-                          "Value": "AppInstance"
-                      }
-                  ]
-              
-          }
-                  }
+    }
+   
+                  },
+  
+  "Outputs": {
+    
+    "name" : {
+      "Value" : -
+    }
+    
   },
-  "Outputs": {}
+
+"name" : {
+  "Value" : -
+}
+
 }
