@@ -4,44 +4,7 @@
     "Metadata": {
 
     },
-    "Parameters": {
-        "webkeypair": {
-            "Description": "-",
-            "Type": "AWS::EC2::KeyPair::KeyName"
-          },
-
-    "WEBinstancetype": {
-    "Description": "Select the available instance type from the list.",
-    "Type": "String",
-   "AllowedValues": [
-     "t2.micro",
-     "t2.large",
-     "t2.xlarge"
-   ]
-},
-
-"APPinstancetype": {
-    "Description": "Provide an instance for webinstance",
-    "Type": "String",
-    "Default": "t2.micro"
-},
-
-"APPkeypair": {
-    "Description": "-",
-    "Type": "AWS::EC2::KeyPair::KeyName"
-    },
-    
-    "EnvironmentType": {
-        "Description": "These are the list of environments like prod, dev, sbx",
-        "Type": "String",
-        "AllowedValues": [
-          "prod",
-          "dev",
-          "sbx"
-        ],
-        "ConstraintDescription": "Most be specify "    
-    }
-    },
+    "Parameters": {},
     "Mappings": {
         "RegionMapTo" : {
             "us-east-1"      : { "AMI" : "ami-0ed9277fb7eb570c9"},
@@ -74,14 +37,14 @@
                 "ImageId" : { "Fn::FindInMap" : [ "RegionMapTo", { "Ref" : "AWS::Region" }, "AMI" ]},
                 
                 "InstanceType": 
-                { "Ref": "WEBinstancetype" }
-                ,
-                "SubnetId" : 
-                { "Ref": "Camtelsubnetpub1" }
+                { "Ref": "WEBinstancetype" },
+
+                "SubnetId" : {"Fn::ImportValue" : {"Fn::Sub" : "${NetworkStack}-PubSebnet"}}
                 ,
                 "Monitoring": "true",
-                "SecurityGroupIds" : 
-                [{ "Ref": "WebSecurityGroup" }],
+                "SecurityGroupIds" : [{"Fn::ImportValue" : {"Fn::Sub" : "${NetworkStack}-WebSG"}}],
+
+                
                 "Tags": [
                     {
                         "Key": "Name",
@@ -104,16 +67,12 @@
                 "ImageId" : { "Fn::FindInMap" : [ "RegionMapTo", { "Ref" : "AWS::Region" }, "AMI" ]},
                 "InstanceType": 
                 { "Ref": "WEBinstancetype" },
-                "SubnetId" : 
-                { "Ref": "Camtelprivsubnet1" }
                 
+                "SubnetId" : {"Fn::ImportValue" : {"Fn::Sub" : "${NetworkStack}-PrivSubnet"}}
                 ,
                 "Monitoring": "true",
-                "SecurityGroupIds" : [
-                  
-                  { "Ref": "WebSecurityGroup" }
-                  
-                ],
+                "SecurityGroupIds" :  [{"Fn::ImportValue" : {"Fn::Sub" : "${NetworkStack}-WebSG"}}],
+
                 "Tags": [
                     {
                         "Key": "Name",

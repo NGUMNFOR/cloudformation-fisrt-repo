@@ -253,14 +253,49 @@
   
   "Outputs": {
     
-    "name" : {
-      "Value" : -
+    "WebsunetOutput" : {
+      "Description":"The Output of WebsubnetID",
+      "Value" :
+      { "Ref": "Camtelsubnetpub1" },
+
+     "Export": {
+        "Name": {
+            "Fn::Sub": "${AWS::StackName}-PubSebnet"
+        }
     }
+      
+    },
     
-  },
+    "AppsubnetOutput" : {
+      "Description":"The Output of AppsubnetID",
+      "Value" :
+      { "Ref": "Camtelprivsubnet1" },
 
-"name" : {
-  "Value" : -
+     "Export": {
+        "Name": {
+            "Fn::Sub": "${AWS::StackName}-PrivSubnet"
+        }
+    }
+      
+    },
+    "WebserverSG" : {
+      "Description":"The security groupID to be use for public webservers",
+      "Value" :{
+        "Fn::GetAtt":[
+          "WebSecurityGroup",
+          "GroupId"
+      ]
+    },
+     "Export": {
+        "Name": {
+            "Fn::Sub": "${AWS::StackName}-WebSG"
+        }
+    }
+      
+    }
+     
+    
+  }
 }
 
-}
+

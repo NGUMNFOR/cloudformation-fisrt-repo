@@ -1,0 +1,26 @@
+[
+    {
+        "ParameterKey": "webkeypair",
+        "ParameterValue": "Dec"
+    },
+    {
+        "ParameterKey": "WEBinstancetype",
+        "ParameterValue": "t2.large"
+    },
+    {
+        "ParameterKey": "APPinstancetype",
+        "ParameterValue": "t2.micro"
+    },
+    {
+        "ParameterKey": "APPkeypair",
+        "ParameterValue": "Dec"
+    },
+    {
+        "ParameterKey": "EnvironmentType",
+        "ParameterValue": "prod"
+    },
+    {
+        "ParameterKey": "NetworkStack",
+        "ParameterValue": "Network"
+    }
+]
